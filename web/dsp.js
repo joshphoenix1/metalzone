@@ -33,6 +33,19 @@ export function highpass(f, Q, sr) {
   return [b0, b1, b2, a0, a1, a2];
 }
 
+export function lowpass(f, Q, sr) {
+  const w0 = 2 * Math.PI * f / sr;
+  const alpha = Math.sin(w0) / (2 * Q);
+  const cos_w0 = Math.cos(w0);
+  const b0 = (1 - cos_w0) / 2;
+  const b1 =  1 - cos_w0;
+  const b2 = (1 - cos_w0) / 2;
+  const a0 =  1 + alpha;
+  const a1 = -2 * cos_w0;
+  const a2 =  1 - alpha;
+  return [b0, b1, b2, a0, a1, a2];
+}
+
 export function lowshelf(f, Q, gainDb, sr) {
   const A = Math.pow(10, gainDb / 40);
   const w0 = 2 * Math.PI * f / sr;

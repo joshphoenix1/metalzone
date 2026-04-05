@@ -64,7 +64,6 @@ void MetalZoneProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     for (int ch = 0; ch < 2; ++ch)
     {
         dcBlocker[ch].reset();
-        interstageHPF[ch].reset();
         lowShelf[ch].reset();
         midPeak[ch].reset();
         highShelf[ch].reset();
@@ -90,15 +89,10 @@ bool MetalZoneProcessor::isBusesLayoutSupported (const BusesLayout& layouts) con
 //==============================================================================
 void MetalZoneProcessor::updateStaticCoefficients()
 {
-    // DC blocker at base rate: HPF ~25 Hz
-    auto dcCoeffs = dsp::IIR::Coefficients<float>::makeHighPass (baseSampleRate, 25.0f, 0.707f);
+    // Pre-clip HPF at 48 Hz — matches MT-2's input coupling, passes all audible bass
+    auto dcCoeffs = dsp::IIR::Coefficients<float>::makeHighPass (baseSampleRate, 48.0f, 0.707f);
     for (int ch = 0; ch < 2; ++ch)
         *dcBlocker[ch].coefficients = *dcCoeffs;
-
-    // Interstage HPF at OS rate: ~720 Hz (shapes MT-2 "scoop-then-growl" character)
-    auto isCoeffs = dsp::IIR::Coefficients<float>::makeHighPass (osSampleRate, 720.0f, 0.707f);
-    for (int ch = 0; ch < 2; ++ch)
-        *interstageHPF[ch].coefficients = *isCoeffs;
 }
 
 void MetalZoneProcessor::updateToneStackCoefficients()
@@ -109,7 +103,7 @@ void MetalZoneProcessor::updateToneStackCoefficients()
 
     auto lowC  = dsp::IIR::Coefficients<float>::makeLowShelf  (baseSampleRate, 100.0f,  0.707f, lowGain);
     auto midC  = dsp::IIR::Coefficients<float>::makePeakFilter(baseSampleRate, midFreqHz, 0.7f,  midGain);
-    auto highC = dsp::IIR::Coefficients<float>::makeHighShelf (baseSampleRate, 8000.0f, 0.707f, highGain);
+    auto highC = dsp::IIR::Coefficients<float>::makeHighShelf (baseSampleRate, 3200.0f, 0.707f, highGain);
 
     for (int ch = 0; ch < 2; ++ch)
     {
@@ -164,16 +158,14 @@ void MetalZoneProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer&)
         {
             float x = data[i];
 
-            // Stage 1: symmetric soft clip (op-amp + diodes in feedback, first stage)
+            // Stage 1: symmetric soft clip
             x = std::tanh (x);
 
-            // Interstage HPF — shapes the mids between clipping stages
-            x = interstageHPF[filterCh].processSample (x);
-
-            // Stage 2: asymmetric soft clip (slight DC bias before tanh)
-            // Removes the DC offset after clipping so we don't accumulate bias.
+            // Stage 2: asymmetric soft clip with DC-cancelling bias
             constexpr float bias = 0.15f;
             x = std::tanh (x * 1.6f + bias) - std::tanh (bias);
+
+            juce::ignoreUnused (filterCh);
 
             data[i] = x;
         }

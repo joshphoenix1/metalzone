@@ -43,7 +43,7 @@ target_sources(MetalZone PRIVATE
 # Embed the MT-2 reference image as plugin binary data
 juce_add_binary_data(MetalZoneAssets
   SOURCES
-    web/assets/mt2-gal.jpg
+    web/assets/mt2-gal.png
 )
 
 target_compile_definitions(MetalZone PUBLIC

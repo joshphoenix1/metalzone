@@ -22,7 +22,6 @@ class MetalZoneProcessor extends AudioWorkletProcessor {
   constructor() {
     super();
     this.dcBlock       = [new Biquad(), new Biquad()];
-    this.interstageHPF = [new Biquad(), new Biquad()];
     this.lowShelf      = [new Biquad(), new Biquad()];
     this.midPeak       = [new Biquad(), new Biquad()];
     this.highShelf     = [new Biquad(), new Biquad()];
@@ -31,11 +30,10 @@ class MetalZoneProcessor extends AudioWorkletProcessor {
   }
 
   initStatic() {
-    const dc = highpass(25, 0.707, sampleRate);
-    const is = highpass(720, 0.707, sampleRate);
+    // Pre-clip HPF (~48 Hz) matches MT-2 input coupling — passes all audible bass
+    const dc = highpass(48, 0.707, sampleRate);
     for (let ch = 0; ch < 2; ch++) {
       this.dcBlock[ch].setCoeffs(...dc);
-      this.interstageHPF[ch].setCoeffs(...is);
     }
     this.staticInitialized = true;
   }
@@ -45,7 +43,7 @@ class MetalZoneProcessor extends AudioWorkletProcessor {
     if (p.low === lowDb && p.mid === midDb && p.midFreq === midFreqHz && p.high === highDb) return;
     const ls = lowshelf(100, 0.707, lowDb, sampleRate);
     const pk = peaking(midFreqHz, 0.7, midDb, sampleRate);
-    const hs = highshelf(8000, 0.707, highDb, sampleRate);
+    const hs = highshelf(3200, 0.707, highDb, sampleRate);
     for (let ch = 0; ch < 2; ch++) {
       this.lowShelf[ch].setCoeffs(...ls);
       this.midPeak[ch].setCoeffs(...pk);
@@ -81,21 +79,19 @@ class MetalZoneProcessor extends AudioWorkletProcessor {
     for (let ch = 0; ch < numCh; ch++) {
       const inCh = input[ch];
       const outCh = output[ch];
-      const dc   = this.dcBlock[ch];
-      const iHPF = this.interstageHPF[ch];
-      const ls   = this.lowShelf[ch];
-      const pk   = this.midPeak[ch];
-      const hs   = this.highShelf[ch];
+      const dc  = this.dcBlock[ch];
+      const ls  = this.lowShelf[ch];
+      const pk  = this.midPeak[ch];
+      const hs  = this.highShelf[ch];
 
       for (let i = 0; i < numSamples; i++) {
         let x = dc.process(inCh[i]);
         x = x * preGain;
-        x = Math.tanh(x);
-        x = iHPF.process(x);
-        x = Math.tanh(x * 1.6 + bias) - biasOffset;
-        x = ls.process(x);
-        x = pk.process(x);
-        x = hs.process(x);
+        x = Math.tanh(x);                               // clip stage 1
+        x = Math.tanh(x * 1.6 + bias) - biasOffset;     // clip stage 2 (asym)
+        x = ls.process(x);                              // tone: low shelf
+        x = pk.process(x);                              // tone: mid peak
+        x = hs.process(x);                              // tone: high shelf
         outCh[i] = x * makeup;
       }
     }

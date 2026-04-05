@@ -41,11 +41,8 @@ private:
     static constexpr size_t kOsStages = 2;
     std::unique_ptr<juce::dsp::Oversampling<float>> oversampler;
 
-    // DC blocker at base rate (per channel)
+    // Pre-clip HPF at base rate (per channel) — 48 Hz input coupling
     juce::dsp::IIR::Filter<float> dcBlocker[2];
-
-    // Interstage HPF at OS rate (per channel) — shapes mids between clipping stages
-    juce::dsp::IIR::Filter<float> interstageHPF[2];
 
     // Tone stack at base rate (per channel)
     juce::dsp::IIR::Filter<float> lowShelf[2];
