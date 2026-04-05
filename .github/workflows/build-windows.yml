@@ -1,0 +1,38 @@
+name: Build Windows VST3
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure CMake
+        run: cmake -B build -G "Visual Studio 17 2022" -A x64
+
+      - name: Build (Release)
+        run: cmake --build build --config Release --target MetalZone_VST3 --parallel
+
+      - name: Locate VST3
+        id: locate
+        shell: pwsh
+        run: |
+          $vst3 = Get-ChildItem -Path build -Recurse -Filter "MetalZone.vst3" -Directory | Select-Object -First 1
+          if (-not $vst3) { throw "MetalZone.vst3 not found" }
+          echo "vst3_path=$($vst3.FullName)" >> $env:GITHUB_OUTPUT
+          echo "Found: $($vst3.FullName)"
+
+      - name: Upload VST3 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MetalZone-Windows-VST3
+          path: ${{ steps.locate.outputs.vst3_path }}
+          if-no-files-found: error
