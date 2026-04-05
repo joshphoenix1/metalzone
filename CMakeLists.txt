@@ -40,6 +40,12 @@ target_sources(MetalZone PRIVATE
   src/ConcentricKnob.h
 )
 
+# Embed the MT-2 reference image as plugin binary data
+juce_add_binary_data(MetalZoneAssets
+  SOURCES
+    web/assets/mt2-gal.jpg
+)
+
 target_compile_definitions(MetalZone PUBLIC
   JUCE_WEB_BROWSER=0
   JUCE_USE_CURL=0
@@ -49,6 +55,7 @@ target_compile_definitions(MetalZone PUBLIC
 
 target_link_libraries(MetalZone
   PRIVATE
+    MetalZoneAssets
     juce::juce_audio_utils
     juce::juce_audio_processors
     juce::juce_dsp

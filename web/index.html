@@ -8,60 +8,38 @@
 </head>
 <body>
   <div class="stage">
-    <!-- Pedal -->
-    <div class="pedal" id="pedal">
-      <div class="header">
-        <span class="boss">BOSS</span>
-        <span class="compact">COMPACT PEDAL</span>
-      </div>
-      <div class="title-bar">
-        <span class="title">METAL ZONE</span>
-        <span class="model">MT-2</span>
-      </div>
-      <hr class="divider">
+    <!-- Pedal (actual MT-2 photo as background, interactive knobs overlaid) -->
+    <div class="pedal">
+      <img class="pedal-img" src="assets/mt2-gal.jpg" alt="Boss MT-2 Metal Zone">
 
-      <!-- 4 knob columns -->
-      <div class="knob-row">
-        <div class="knob-col">
-          <div class="knob" data-param="level" data-min="0" data-max="1" data-default="0.5"></div>
-          <div class="knob-label">LEVEL</div>
-        </div>
-        <div class="knob-col">
-          <div class="concentric">
-            <div class="knob outer" data-param="high" data-min="-15" data-max="15" data-default="0" data-unit="dB"></div>
-            <div class="knob inner" data-param="low" data-min="-15" data-max="15" data-default="0" data-unit="dB"></div>
-          </div>
-          <div class="knob-label"><span>HIGH</span><span>LOW</span></div>
-        </div>
-        <div class="knob-col">
-          <div class="concentric">
-            <div class="knob outer" data-param="midFreq" data-min="200" data-max="5000" data-default="500" data-skew="log" data-unit="Hz"></div>
-            <div class="knob inner" data-param="mid" data-min="-15" data-max="15" data-default="0" data-unit="dB"></div>
-          </div>
-          <div class="knob-label"><span>MID FREQ</span><span>MIDDLE</span></div>
-        </div>
-        <div class="knob-col">
-          <div class="knob" data-param="dist" data-min="0" data-max="1" data-default="0.5"></div>
-          <div class="knob-label">DIST</div>
+      <!-- LED (position over the 'CHECK' indicator) -->
+      <div class="led-overlay" id="led" style="left:50%; top:4.6%;"></div>
+
+      <!-- Knobs: 4 across the top, coordinates are % of image dimensions -->
+      <div class="knob-wrap" style="left:16%; top:13.5%;">
+        <div class="knob" data-param="level" data-min="0" data-max="1" data-default="0.5" data-size="single"></div>
+      </div>
+
+      <div class="knob-wrap" style="left:35%; top:13.5%;">
+        <div class="concentric">
+          <div class="knob outer" data-param="high" data-min="-15" data-max="15" data-default="0" data-unit="dB"></div>
+          <div class="knob inner" data-param="low" data-min="-15" data-max="15" data-default="0" data-unit="dB"></div>
         </div>
       </div>
 
-      <div class="led-area">
-        <span class="led-label">CHECK</span>
-        <div class="led" id="led"></div>
+      <div class="knob-wrap" style="left:61%; top:13.5%;">
+        <div class="concentric">
+          <div class="knob outer" data-param="midFreq" data-min="200" data-max="5000" data-default="500" data-skew="log" data-unit="Hz"></div>
+          <div class="knob inner" data-param="mid" data-min="-15" data-max="15" data-default="0" data-unit="dB"></div>
+        </div>
       </div>
 
-      <div class="footswitch" id="footswitch">
-        <div class="footswitch-cap"></div>
+      <div class="knob-wrap" style="left:83%; top:13.5%;">
+        <div class="knob" data-param="dist" data-min="0" data-max="1" data-default="0.5" data-size="single"></div>
       </div>
 
-      <div class="footer">METAL ZONE&nbsp;&nbsp;MT-2</div>
-
-      <!-- Corner screws -->
-      <div class="screw tl"></div>
-      <div class="screw tr"></div>
-      <div class="screw bl"></div>
-      <div class="screw br"></div>
+      <!-- Footswitch overlay (clickable area over the real footswitch plate) -->
+      <div class="footswitch-overlay" id="footswitch" style="left:50%; top:78%;"></div>
     </div>
 
     <!-- Controls panel -->

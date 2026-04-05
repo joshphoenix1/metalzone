@@ -18,6 +18,7 @@ public:
 private:
     MetalZoneProcessor& processor;
     PedalLookAndFeel pedalLnF;
+    juce::Image pedalImage;
 
     using APVTS = juce::AudioProcessorValueTreeState;
     using SliderAttachment = APVTS::SliderAttachment;
