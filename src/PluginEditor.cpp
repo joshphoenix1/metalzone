@@ -28,8 +28,9 @@ MetalZoneEditor::MetalZoneEditor (MetalZoneProcessor& p)
 {
     setLookAndFeel (&pedalLnF);
 
-    pedalImage = ImageCache::getFromMemory (BinaryData::mt2_gal_png,
-                                            BinaryData::mt2_gal_png_Size);
+    int imgSize = 0;
+    if (auto* imgData = BinaryData::getNamedResource ("mt2-gal.png", imgSize))
+        pedalImage = ImageCache::getFromMemory (imgData, imgSize);
 
     setupSingleKnob (levelSlider, levelLabel, "level", "", levelAttachment);
     setupSingleKnob (distSlider,  distLabel,  "dist",  "", distAttachment);
