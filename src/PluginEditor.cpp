@@ -28,9 +28,35 @@ MetalZoneEditor::MetalZoneEditor (MetalZoneProcessor& p)
 {
     setLookAndFeel (&pedalLnF);
 
+    // JUCE's namedResourceList stores the C++-identifier version of the filename
+    // (hyphens/dots → underscores). Try candidates in order.
     int imgSize = 0;
-    if (auto* imgData = BinaryData::getNamedResource ("mt2-gal.png", imgSize))
-        pedalImage = ImageCache::getFromMemory (imgData, imgSize);
+    const char* candidates[] = { "mt2_gal_png", "mt2-gal.png", "mt2galpng" };
+    for (auto* name : candidates)
+    {
+        if (auto* imgData = BinaryData::getNamedResource (name, imgSize))
+        {
+            pedalImage = ImageCache::getFromMemory (imgData, imgSize);
+            break;
+        }
+    }
+    // Last-resort fallback: scan namedResourceList for anything PNG-ish
+    if (! pedalImage.isValid())
+    {
+        for (int i = 0; i < BinaryData::namedResourceListSize; ++i)
+        {
+            const char* name = BinaryData::namedResourceList[i];
+            if (juce::String (name).containsIgnoreCase ("png")
+                || juce::String (name).containsIgnoreCase ("gal"))
+            {
+                if (auto* imgData = BinaryData::getNamedResource (name, imgSize))
+                {
+                    pedalImage = ImageCache::getFromMemory (imgData, imgSize);
+                    break;
+                }
+            }
+        }
+    }
 
     setupSingleKnob (levelSlider, levelLabel, "level", "", levelAttachment);
     setupSingleKnob (distSlider,  distLabel,  "dist",  "", distAttachment);
