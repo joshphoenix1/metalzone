@@ -37,16 +37,26 @@ jobs:
           Invoke-WebRequest -Uri $url -OutFile pluginval.zip
           Expand-Archive pluginval.zip -DestinationPath pluginval -Force
 
-      - name: Validate VST3 with pluginval (strictness 5, non-blocking)
-        continue-on-error: true
+      - name: Validate VST3 with pluginval (strictness 5, blocking)
         shell: pwsh
         run: |
           ./pluginval/pluginval.exe `
             --strictness-level 5 `
             --timeout-ms 300000 `
-            --verbose `
             --validate "${{ steps.locate.outputs.vst3_path }}"
-          echo "pluginval exit code: $LASTEXITCODE"
+          if ($LASTEXITCODE -ne 0) { throw "pluginval (strictness 5) failed: $LASTEXITCODE" }
+
+      - name: pluginval strictness 10 (diagnostic, non-blocking)
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          ./pluginval/pluginval.exe `
+            --strictness-level 10 `
+            --timeout-ms 600000 `
+            --verbose `
+            --randomise `
+            --validate "${{ steps.locate.outputs.vst3_path }}"
+          echo "pluginval strictness 10 exit code: $LASTEXITCODE"
 
       - name: Upload VST3 artifact
         uses: actions/upload-artifact@v4
