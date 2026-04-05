@@ -1,0 +1,331 @@
+/* MetalZone demo — MT-2 pedal-style UI */
+
+:root {
+  --body-orange: #e89135;
+  --body-shadow: #b86a1f;
+  --header-black: #0a0a0a;
+  --boss-silver: #e8e8e8;
+  --text-dark: #101010;
+  --led-red: #ff2020;
+  --chrome-light: #f0f0f0;
+  --chrome-dark: #404040;
+  --screw: #707070;
+  --panel-bg: #1e1e1e;
+  --panel-text: #e0e0e0;
+  --accent: #ff6a00;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, sans-serif;
+  background: #0a0a0a;
+  color: var(--panel-text);
+  min-height: 100vh;
+}
+
+.stage {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  padding: 32px;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+/* ==================== PEDAL ==================== */
+.pedal {
+  position: relative;
+  width: 380px;
+  height: 560px;
+  background: var(--body-orange);
+  border-radius: 10px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.6), inset 0 -4px 0 rgba(0,0,0,0.15);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.header {
+  position: absolute; top: 0; left: 0; right: 0; height: 52px;
+  background: var(--header-black);
+  border-radius: 10px 10px 0 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 18px;
+}
+.boss {
+  color: var(--boss-silver);
+  font-weight: 900;
+  font-size: 26px;
+  letter-spacing: 1px;
+}
+.compact {
+  color: #909090;
+  font-size: 9px;
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+
+.title-bar {
+  position: absolute; top: 58px; left: 0; right: 0; height: 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 18px;
+}
+.title { color: var(--text-dark); font-size: 26px; font-weight: 900; letter-spacing: 1px; }
+.model { color: var(--text-dark); font-size: 14px; font-weight: 900; }
+
+.divider { border: none; border-top: 1px solid var(--body-shadow); margin: 100px 18px 0; }
+
+.knob-row {
+  position: absolute; top: 128px; left: 14px; right: 14px;
+  display: flex; gap: 0;
+}
+.knob-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.knob-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-dark);
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+.knob-label span { display: block; line-height: 1.2; }
+
+/* ==================== KNOBS ==================== */
+.knob {
+  position: relative;
+  width: 70px; height: 70px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 30%, #303030, #0a0a0a 75%);
+  box-shadow:
+    0 0 0 3px #d0d0d0,
+    0 0 0 4px #707070,
+    inset 0 2px 4px rgba(255,255,255,0.15),
+    0 4px 8px rgba(0,0,0,0.5);
+  cursor: grab;
+  touch-action: none;
+}
+.knob:active { cursor: grabbing; }
+.knob::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 28px;
+  background: #f0f0f0;
+  border-radius: 1px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.5);
+}
+.knob::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4px; height: 4px;
+  background: #1a1a1a;
+  border-radius: 50%;
+}
+
+/* Concentric knob: outer is larger, inner sits on top */
+.concentric {
+  position: relative;
+  width: 90px; height: 90px;
+}
+.concentric .outer {
+  width: 90px; height: 90px;
+}
+.concentric .outer::after {
+  top: 4px;
+  height: 18px;
+}
+.concentric .inner {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 46px; height: 46px;
+  z-index: 2;
+  box-shadow:
+    0 0 0 2px #b0b0b0,
+    0 0 0 3px #606060,
+    inset 0 2px 3px rgba(255,255,255,0.2),
+    0 2px 4px rgba(0,0,0,0.6);
+}
+.concentric .inner::after {
+  top: 4px;
+  height: 16px;
+  width: 2.5px;
+}
+
+/* ==================== LED & footswitch ==================== */
+.led-area {
+  position: absolute;
+  top: 272px;
+  left: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.led-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-dark);
+  letter-spacing: 0.5px;
+}
+.led {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #ff9090, var(--led-red) 60%);
+  box-shadow: 0 0 0 2px #202020, 0 0 8px rgba(255,40,40,0.4);
+  transition: box-shadow 0.12s, background 0.12s;
+}
+.led.active {
+  background: radial-gradient(circle at 40% 35%, #ffe0e0, #ff6060 60%);
+  box-shadow: 0 0 0 2px #202020, 0 0 18px rgba(255,60,60,0.9);
+}
+
+.footswitch {
+  position: absolute;
+  left: 50%; bottom: 100px;
+  transform: translateX(-50%);
+  width: 104px; height: 104px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 20%, var(--chrome-light), var(--chrome-dark) 80%);
+  cursor: pointer;
+  box-shadow: 0 6px 10px rgba(0,0,0,0.5);
+}
+.footswitch-cap {
+  position: absolute;
+  top: 10px; left: 10px; right: 10px; bottom: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 25%, #606060, #1a1a1a 80%);
+}
+.footswitch-cap::after {
+  content: '';
+  position: absolute;
+  top: 10%; left: 20%;
+  width: 60%; height: 30%;
+  background: rgba(255,255,255,0.22);
+  border-radius: 50%;
+  filter: blur(2px);
+}
+
+.footer {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 26px;
+  background: var(--header-black);
+  border-radius: 0 0 10px 10px;
+  color: var(--boss-silver);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.screw {
+  position: absolute;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, #a0a0a0, #404040);
+  box-shadow: 0 0 0 1px #2a2a2a, inset 0 0 0 1px rgba(0,0,0,0.4);
+}
+.screw::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 15%; right: 15%;
+  height: 1.5px;
+  background: #202020;
+  transform: translateY(-50%);
+}
+.screw.tl { top: 62px; left: 10px; }
+.screw.tr { top: 62px; right: 10px; }
+.screw.bl { bottom: 34px; left: 10px; }
+.screw.br { bottom: 34px; right: 10px; }
+
+/* ==================== CONTROLS PANEL ==================== */
+.controls-panel {
+  width: 340px;
+  background: var(--panel-bg);
+  border-radius: 10px;
+  padding: 24px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+.controls-panel h2 {
+  margin: 0 0 14px;
+  font-size: 16px;
+  color: var(--accent);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.controls-panel h3 {
+  margin: 24px 0 10px;
+  font-size: 13px;
+  color: var(--accent);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.source-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.source-controls button,
+.file-label {
+  padding: 8px 14px;
+  background: #303030;
+  color: var(--panel-text);
+  border: 1px solid #505050;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.source-controls button:hover:not(:disabled),
+.file-label:hover {
+  background: #404040;
+}
+.source-controls button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.file-label input[type="file"] { display: none; }
+.loop-toggle {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--panel-text);
+  cursor: pointer;
+}
+.status {
+  margin-top: 14px;
+  padding: 10px 12px;
+  background: #0a0a0a;
+  border-left: 3px solid var(--accent);
+  font-size: 12px;
+  color: #b0b0b0;
+  line-height: 1.5;
+}
+.readout {
+  font-family: "SF Mono", Monaco, Consolas, monospace;
+  font-size: 12px;
+  background: #0a0a0a;
+  padding: 10px 12px;
+  border-radius: 4px;
+  color: #d0d0d0;
+  line-height: 1.6;
+}
+.notes {
+  margin-top: 18px;
+  font-size: 11px;
+  color: #808080;
+  line-height: 1.5;
+}

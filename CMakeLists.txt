@@ -36,6 +36,8 @@ target_sources(MetalZone PRIVATE
   src/PluginProcessor.h
   src/PluginEditor.cpp
   src/PluginEditor.h
+  src/PedalLookAndFeel.h
+  src/ConcentricKnob.h
 )
 
 target_compile_definitions(MetalZone PUBLIC

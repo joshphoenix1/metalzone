@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MetalZone — MT-2 Distortion Demo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="stage">
+    <!-- Pedal -->
+    <div class="pedal" id="pedal">
+      <div class="header">
+        <span class="boss">BOSS</span>
+        <span class="compact">COMPACT PEDAL</span>
+      </div>
+      <div class="title-bar">
+        <span class="title">METAL ZONE</span>
+        <span class="model">MT-2</span>
+      </div>
+      <hr class="divider">
+
+      <!-- 4 knob columns -->
+      <div class="knob-row">
+        <div class="knob-col">
+          <div class="knob" data-param="level" data-min="0" data-max="1" data-default="0.5"></div>
+          <div class="knob-label">LEVEL</div>
+        </div>
+        <div class="knob-col">
+          <div class="concentric">
+            <div class="knob outer" data-param="high" data-min="-15" data-max="15" data-default="0" data-unit="dB"></div>
+            <div class="knob inner" data-param="low" data-min="-15" data-max="15" data-default="0" data-unit="dB"></div>
+          </div>
+          <div class="knob-label"><span>HIGH</span><span>LOW</span></div>
+        </div>
+        <div class="knob-col">
+          <div class="concentric">
+            <div class="knob outer" data-param="midFreq" data-min="200" data-max="5000" data-default="500" data-skew="log" data-unit="Hz"></div>
+            <div class="knob inner" data-param="mid" data-min="-15" data-max="15" data-default="0" data-unit="dB"></div>
+          </div>
+          <div class="knob-label"><span>MID FREQ</span><span>MIDDLE</span></div>
+        </div>
+        <div class="knob-col">
+          <div class="knob" data-param="dist" data-min="0" data-max="1" data-default="0.5"></div>
+          <div class="knob-label">DIST</div>
+        </div>
+      </div>
+
+      <div class="led-area">
+        <span class="led-label">CHECK</span>
+        <div class="led" id="led"></div>
+      </div>
+
+      <div class="footswitch" id="footswitch">
+        <div class="footswitch-cap"></div>
+      </div>
+
+      <div class="footer">METAL ZONE&nbsp;&nbsp;MT-2</div>
+
+      <!-- Corner screws -->
+      <div class="screw tl"></div>
+      <div class="screw tr"></div>
+      <div class="screw bl"></div>
+      <div class="screw br"></div>
+    </div>
+
+    <!-- Controls panel -->
+    <div class="controls-panel">
+      <h2>Audio Source</h2>
+      <div class="source-controls">
+        <button id="btn-demo">Play Demo Tone</button>
+        <button id="btn-stop" disabled>Stop</button>
+        <label class="file-label">
+          Load File
+          <input type="file" id="file-input" accept="audio/*">
+        </label>
+        <label class="loop-toggle">
+          <input type="checkbox" id="loop-check" checked>
+          Loop
+        </label>
+      </div>
+      <div class="status" id="status">Click a knob to engage the audio context (browser requirement). Then choose a source.</div>
+      <h3>Param readout</h3>
+      <div class="readout" id="readout"></div>
+      <div class="notes">
+        <strong>Note:</strong> Web demo skips oversampling — the VST version does 4x.
+        Expect slightly more aliasing here than in the DAW plugin.
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
