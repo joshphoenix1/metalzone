@@ -30,6 +30,24 @@ jobs:
           echo "vst3_path=$($vst3.FullName)" >> $env:GITHUB_OUTPUT
           echo "Found: $($vst3.FullName)"
 
+      - name: Download pluginval
+        shell: pwsh
+        run: |
+          $url = "https://github.com/Tracktion/pluginval/releases/download/v1.0.3/pluginval_Windows.zip"
+          Invoke-WebRequest -Uri $url -OutFile pluginval.zip
+          Expand-Archive pluginval.zip -DestinationPath pluginval -Force
+
+      - name: Validate VST3 with pluginval (strictness 10)
+        shell: pwsh
+        run: |
+          ./pluginval/pluginval.exe `
+            --strictness-level 10 `
+            --timeout-ms 300000 `
+            --validate-in-process `
+            --skip-gui-tests `
+            --validate "${{ steps.locate.outputs.vst3_path }}"
+          if ($LASTEXITCODE -ne 0) { throw "pluginval failed with exit code $LASTEXITCODE" }
+
       - name: Upload VST3 artifact
         uses: actions/upload-artifact@v4
         with:
