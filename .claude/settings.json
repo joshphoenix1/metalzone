@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/ubuntu/metalzone-vst/.claude/hooks/log-change.sh",
+            "timeout": 5000
+          }
+        ]
+      }
+    ]
+  }
+}
