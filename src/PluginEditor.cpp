@@ -11,15 +11,17 @@ namespace
 
     // Normalized knob centres as fractions of editor size,
     // matched to the knob positions on the mt2-gal.png image.
-    constexpr float kKnobY        = 0.17f;
-    constexpr float kKnobXLevel   = 0.16f;
+    constexpr float kKnobYLevel   = 0.136f;
+    constexpr float kKnobYDist    = 0.136f;
+    constexpr float kKnobYEQ      = 0.155f;
+    constexpr float kKnobXLevel   = 0.18f;
     constexpr float kKnobXHighLow = 0.37f;
     constexpr float kKnobXMidFreq = 0.62f;
-    constexpr float kKnobXDist    = 0.85f;
+    constexpr float kKnobXDist    = 0.83f;
 
     // Single-knob diameter + concentric outer/inner sizes (in editor px)
-    constexpr int   kSingleKnobSize    = 90;
-    constexpr int   kConcentricOuterSz = 120;
+    constexpr int   kSingleKnobSize    = 55;
+    constexpr int   kConcentricOuterSz = 78;
 }
 
 //==============================================================================
@@ -127,8 +129,8 @@ void MetalZoneEditor::resized()
         c.setBounds (cx - size / 2, cy - size / 2, size, size);
     };
 
-    placeCentred (levelSlider, kKnobXLevel,   kKnobY, kSingleKnobSize);
-    placeCentred (*eqHighLow,  kKnobXHighLow, kKnobY, kConcentricOuterSz);
-    placeCentred (*eqMidFreq,  kKnobXMidFreq, kKnobY, kConcentricOuterSz);
-    placeCentred (distSlider,  kKnobXDist,    kKnobY, kSingleKnobSize);
+    placeCentred (levelSlider, kKnobXLevel,   kKnobYLevel, kSingleKnobSize);
+    placeCentred (*eqHighLow,  kKnobXHighLow, kKnobYEQ,    kConcentricOuterSz);
+    placeCentred (*eqMidFreq,  kKnobXMidFreq, kKnobYEQ,    kConcentricOuterSz);
+    placeCentred (distSlider,  kKnobXDist,    kKnobYDist,  kSingleKnobSize);
 }
