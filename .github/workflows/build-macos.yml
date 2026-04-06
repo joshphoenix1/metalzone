@@ -1,0 +1,108 @@
+name: Build macOS AU & VST3
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure CMake
+        run: cmake -B build -G "Xcode" -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
+
+      - name: Build AU (Release)
+        run: cmake --build build --config Release --target MetalZone_AU --parallel
+
+      - name: Build VST3 (Release)
+        run: cmake --build build --config Release --target MetalZone_VST3 --parallel
+
+      - name: Locate AU
+        id: locate-au
+        run: |
+          au_path=$(find build -type d -name "MetalZone.component" | head -1)
+          if [ -z "$au_path" ]; then echo "MetalZone.component not found" && exit 1; fi
+          echo "au_path=$au_path" >> "$GITHUB_OUTPUT"
+          echo "Found: $au_path"
+
+      - name: Locate VST3
+        id: locate-vst3
+        run: |
+          vst3_path=$(find build -type d -name "MetalZone.vst3" | head -1)
+          if [ -z "$vst3_path" ]; then echo "MetalZone.vst3 not found" && exit 1; fi
+          echo "vst3_path=$vst3_path" >> "$GITHUB_OUTPUT"
+          echo "Found: $vst3_path"
+
+      - name: Validate AU with auval
+        continue-on-error: true
+        run: |
+          # Install the AU so auval can find it
+          mkdir -p "$HOME/Library/Audio/Plug-Ins/Components"
+          cp -R "${{ steps.locate-au.outputs.au_path }}" "$HOME/Library/Audio/Plug-Ins/Components/"
+          # Give the AU server a moment to register
+          killall -9 AudioComponentRegistrar 2>/dev/null || true
+          sleep 2
+          auval -a 2>&1 | grep -i metalzone || echo "AU not yet visible to auval"
+          auval -v aufx Mtlz Hmbr 2>&1 | tee auval.log
+
+      - name: Download pluginval
+        run: |
+          curl -L -o pluginval.zip https://github.com/Tracktion/pluginval/releases/download/v1.0.3/pluginval_macOS.zip
+          unzip pluginval.zip -d pluginval
+
+      - name: pluginval AU (strictness 5)
+        continue-on-error: true
+        run: |
+          ./pluginval/pluginval.app/Contents/MacOS/pluginval \
+            --strictness-level 5 \
+            --timeout-ms 300000 \
+            --verbose \
+            --validate "${{ steps.locate-au.outputs.au_path }}" 2>&1 \
+            | tee pluginval-au.log
+
+      - name: pluginval VST3 (strictness 5)
+        continue-on-error: true
+        run: |
+          ./pluginval/pluginval.app/Contents/MacOS/pluginval \
+            --strictness-level 5 \
+            --timeout-ms 300000 \
+            --verbose \
+            --validate "${{ steps.locate-vst3.outputs.vst3_path }}" 2>&1 \
+            | tee pluginval-vst3.log
+
+      - name: Upload auval log
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: auval-log
+          path: auval.log
+          if-no-files-found: warn
+
+      - name: Upload pluginval logs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pluginval-macos-logs
+          path: pluginval-*.log
+          if-no-files-found: warn
+
+      - name: Upload AU artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MetalZone-macOS-AU
+          path: ${{ steps.locate-au.outputs.au_path }}
+          if-no-files-found: error
+
+      - name: Upload VST3 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MetalZone-macOS-VST3
+          path: ${{ steps.locate-vst3.outputs.vst3_path }}
+          if-no-files-found: error

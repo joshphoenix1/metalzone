@@ -20,7 +20,7 @@ juce_add_plugin(MetalZone
   BUNDLE_ID                 "com.homebrew.metalzone"
   PLUGIN_MANUFACTURER_CODE  Hmbr
   PLUGIN_CODE               Mtlz
-  FORMATS                   VST3
+  FORMATS                   AU VST3
   PRODUCT_NAME              "MetalZone"
   IS_SYNTH                  FALSE
   NEEDS_MIDI_INPUT          FALSE
@@ -28,6 +28,7 @@ juce_add_plugin(MetalZone
   IS_MIDI_EFFECT            FALSE
   EDITOR_WANTS_KEYBOARD_FOCUS FALSE
   COPY_PLUGIN_AFTER_BUILD   FALSE
+  AU_MAIN_TYPE              kAudioUnitType_Effect
   VST3_CATEGORIES           Fx Distortion
 )
 
