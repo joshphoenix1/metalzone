@@ -11,8 +11,8 @@ namespace
 
     // Normalized knob centres as fractions of editor size,
     // matched to the knob positions on the mt2-gal.png image.
-    constexpr float kKnobYLevel   = 0.136f;
-    constexpr float kKnobYDist    = 0.136f;
+    constexpr float kKnobYLevel   = 0.138f;
+    constexpr float kKnobYDist    = 0.138f;
     constexpr float kKnobYEQ      = 0.155f;
     constexpr float kKnobXLevel   = 0.18f;
     constexpr float kKnobXHighLow = 0.37f;
