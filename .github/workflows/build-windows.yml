@@ -57,9 +57,17 @@ jobs:
           path: pluginval-s5.log
           if-no-files-found: warn
 
+      - name: Stage single-file VST3
+        shell: pwsh
+        run: |
+          $bin = Get-ChildItem -Path "${{ steps.locate.outputs.vst3_path }}" -Recurse -Filter "MetalZone.vst3" -File | Select-Object -First 1
+          if (-not $bin) { throw "VST3 binary not found inside bundle" }
+          New-Item -ItemType Directory -Path staging -Force | Out-Null
+          Copy-Item $bin.FullName staging/MetalZone.vst3
+
       - name: Upload VST3 artifact
         uses: actions/upload-artifact@v4
         with:
           name: MetalZone-Windows-VST3
-          path: ${{ steps.locate.outputs.vst3_path }}
+          path: staging/MetalZone.vst3
           if-no-files-found: error

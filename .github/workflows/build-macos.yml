@@ -93,16 +93,22 @@ jobs:
           path: pluginval-*.log
           if-no-files-found: warn
 
+      - name: Stage plugin bundles
+        run: |
+          mkdir -p staging-au staging-vst3
+          cp -R "${{ steps.locate-au.outputs.au_path }}" staging-au/MetalZone.component
+          cp -R "${{ steps.locate-vst3.outputs.vst3_path }}" staging-vst3/MetalZone.vst3
+
       - name: Upload AU artifact
         uses: actions/upload-artifact@v4
         with:
           name: MetalZone-macOS-AU
-          path: ${{ steps.locate-au.outputs.au_path }}
+          path: staging-au
           if-no-files-found: error
 
       - name: Upload VST3 artifact
         uses: actions/upload-artifact@v4
         with:
           name: MetalZone-macOS-VST3
-          path: ${{ steps.locate-vst3.outputs.vst3_path }}
+          path: staging-vst3
           if-no-files-found: error
