@@ -52,7 +52,7 @@ html, body {
 /* ==================== KNOBS ==================== */
 .knob {
   position: relative;
-  width: 65px; height: 65px;
+  width: 55px; height: 55px;
   border-radius: 50%;
   background:
     radial-gradient(circle at 50% 28%, #3a3a3a, #080808 80%);
@@ -75,7 +75,7 @@ html, body {
   left: 50%;
   transform: translateX(-50%);
   width: 2.5px;
-  height: 26px;
+  height: 22px;
   background: #f5f5f5;
   border-radius: 1px;
   box-shadow: 0 0 2px rgba(0,0,0,0.8);
