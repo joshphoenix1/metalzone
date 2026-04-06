@@ -21,7 +21,7 @@ namespace
 
     // Single-knob diameter + concentric outer/inner sizes (in editor px)
     constexpr int   kSingleKnobSize    = 55;
-    constexpr int   kConcentricOuterSz = 94;
+    constexpr int   kConcentricOuterSz = 78;
 }
 
 //==============================================================================
