@@ -53,9 +53,14 @@ public:
     void resized() override
     {
         auto bounds = getLocalBounds();
-        auto captionsArea = bounds.removeFromBottom (26);
-        outerCaption.setBounds (captionsArea.removeFromLeft (captionsArea.getWidth() / 2));
-        innerCaption.setBounds (captionsArea);
+        const bool hasCaptions = outerCaption.getText().isNotEmpty()
+                              || innerCaption.getText().isNotEmpty();
+        if (hasCaptions)
+        {
+            auto captionsArea = bounds.removeFromBottom (26);
+            outerCaption.setBounds (captionsArea.removeFromLeft (captionsArea.getWidth() / 2));
+            innerCaption.setBounds (captionsArea);
+        }
 
         // Outer: fills bounds. Inner: centered, ~55% diameter.
         const int side = juce::jmin (bounds.getWidth(), bounds.getHeight());

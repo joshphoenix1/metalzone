@@ -84,19 +84,19 @@ html, body {
 /* Concentric: outer ring + smaller inner cap */
 .concentric {
   position: relative;
-  width: 78px; height: 78px;
+  width: 94px; height: 94px;
 }
 .concentric .outer {
-  width: 78px; height: 78px;
+  width: 94px; height: 94px;
 }
 .concentric .outer::after {
-  top: 4px; height: 18px;
+  top: 5px; height: 22px;
 }
 .concentric .inner {
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  width: 43px; height: 43px;
+  width: 52px; height: 52px;
   z-index: 2;
   box-shadow:
     0 0 0 1px #1a1a1a,
@@ -106,7 +106,7 @@ html, body {
     0 2px 4px rgba(0,0,0,0.7);
 }
 .concentric .inner::after {
-  top: 3px; height: 16px; width: 2px;
+  top: 4px; height: 19px; width: 2px;
 }
 
 /* ==================== LED & FOOTSWITCH OVERLAYS ==================== */
