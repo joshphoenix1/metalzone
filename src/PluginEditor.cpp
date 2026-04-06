@@ -9,17 +9,17 @@ namespace
     constexpr int   kEditorWidth  = 380;
     constexpr int   kEditorHeight = 673;
 
-    // Normalized knob centres as fractions of editor size
-    // (same coordinates used in web/style.css for the web demo).
-    constexpr float kKnobY        = 0.135f;
+    // Normalized knob centres as fractions of editor size,
+    // matched to the knob positions on the mt2-gal.png image.
+    constexpr float kKnobY        = 0.17f;
     constexpr float kKnobXLevel   = 0.16f;
-    constexpr float kKnobXHighLow = 0.35f;
-    constexpr float kKnobXMidFreq = 0.61f;
-    constexpr float kKnobXDist    = 0.83f;
+    constexpr float kKnobXHighLow = 0.37f;
+    constexpr float kKnobXMidFreq = 0.62f;
+    constexpr float kKnobXDist    = 0.85f;
 
     // Single-knob diameter + concentric outer/inner sizes (in editor px)
-    constexpr int   kSingleKnobSize    = 44;
-    constexpr int   kConcentricOuterSz = 60;
+    constexpr int   kSingleKnobSize    = 90;
+    constexpr int   kConcentricOuterSz = 120;
 }
 
 //==============================================================================

@@ -52,7 +52,7 @@ html, body {
 /* ==================== KNOBS ==================== */
 .knob {
   position: relative;
-  width: 44px; height: 44px;
+  width: 90px; height: 90px;
   border-radius: 50%;
   background:
     radial-gradient(circle at 50% 28%, #3a3a3a, #080808 80%);
@@ -71,11 +71,11 @@ html, body {
 .knob::after {
   content: '';
   position: absolute;
-  top: 3px;
+  top: 6px;
   left: 50%;
   transform: translateX(-50%);
-  width: 2.5px;
-  height: 18px;
+  width: 3px;
+  height: 36px;
   background: #f5f5f5;
   border-radius: 1px;
   box-shadow: 0 0 2px rgba(0,0,0,0.8);
@@ -84,19 +84,19 @@ html, body {
 /* Concentric: outer ring + smaller inner cap */
 .concentric {
   position: relative;
-  width: 60px; height: 60px;
+  width: 120px; height: 120px;
 }
 .concentric .outer {
-  width: 60px; height: 60px;
+  width: 120px; height: 120px;
 }
 .concentric .outer::after {
-  top: 3px; height: 14px;
+  top: 6px; height: 28px;
 }
 .concentric .inner {
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  width: 30px; height: 30px;
+  width: 66px; height: 66px;
   z-index: 2;
   box-shadow:
     0 0 0 1px #1a1a1a,
@@ -106,7 +106,7 @@ html, body {
     0 2px 4px rgba(0,0,0,0.7);
 }
 .concentric .inner::after {
-  top: 2px; height: 11px; width: 2px;
+  top: 4px; height: 24px; width: 2.5px;
 }
 
 /* ==================== LED & FOOTSWITCH OVERLAYS ==================== */
